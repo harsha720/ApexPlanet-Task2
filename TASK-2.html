@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Form + Image Gallery</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f2f6fc;
+    }
+
+    .section {
+      display: none;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    .active {
+      display: block;
+    }
+
+    h2 {
+      text-align: center;
+      color: #1976d2;
+      margin-bottom: 20px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0d47a1;
+    }
+
+    .upload-section {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+    }
+
+    .img-card {
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .img-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .delete-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background-color: rgba(244, 67, 54, 0.9);
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      font-size: 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .delete-btn:hover {
+      background-color: #b71c1c;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Section 1: Contact Form -->
+  <div class="section active" id="contactSection">
+    <h2>Contact Us</h2>
+    <form id="contactForm">
+      <input type="text" id="name" placeholder="Your Name" required />
+      <input type="email" id="email" placeholder="Your Email" required />
+      <textarea id="message" placeholder="Your Message" rows="5" required></textarea>
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+  <!-- Section 2: Image Gallery -->
+  <div class="section" id="gallerySection">
+    <h2>Image Gallery</h2>
+    <div class="upload-section">
+      <input type="file" id="imageInput" accept="image/*" multiple />
+    </div>
+    <div class="gallery" id="galleryContainer"></div>
+  </div>
+
+  <script>
+    const contactForm = document.getElementById('contactForm');
+    const contactSection = document.getElementById('contactSection');
+    const gallerySection = document.getElementById('gallerySection');
+    const imageInput = document.getElementById('imageInput');
+    const galleryContainer = document.getElementById('galleryContainer');
+
+    // Switch to gallery after submitting contact form
+    contactForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      contactSection.classList.remove('active');
+      gallerySection.classList.add('active');
+    });
+
+    // Add uploaded images to the gallery
+    imageInput.addEventListener('change', function () {
+      const files = imageInput.files;
+      for (let file of files) {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          const imgCard = document.createElement('div');
+          imgCard.className = 'img-card';
+
+          const img = document.createElement('img');
+          img.src = event.target.result;
+
+          const delBtn = document.createElement('button');
+          delBtn.className = 'delete-btn';
+          delBtn.textContent = 'Delete';
+          delBtn.onclick = () => imgCard.remove();
+
+          imgCard.appendChild(img);
+          imgCard.appendChild(delBtn);
+          galleryContainer.appendChild(imgCard);
+        };
+        reader.readAsDataURL(file);
+      }
+
+      // Reset input so same file can be added again
+      imageInput.value = '';
+    });
+  </script>
+</body>
+</html>
